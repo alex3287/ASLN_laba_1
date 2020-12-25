@@ -40,6 +40,7 @@ class BoolFunction:
         return mDNF
 
     def glue(self, vector1, vector2):
+        '''метод осуществляет склеивание векторв'''
         newVector = ''
         countGlue = 0
         for i, j in zip(vector1, vector2):
@@ -52,8 +53,43 @@ class BoolFunction:
             return None
         return newVector
 
+    def getMinDNF(self, dnf):
+        size = len(dnf)
+        list1 = []
+        list2 = []
+        list3 = []
+        mark = [0]*size
+        m = 0
+        # выполнения склеивания векторов
+        for i in range(size-1):  # TODO тут перепроверить нужно
+            for j in range(i+1, size):
+                temp = self.glue(dnf[i], dnf[j])
+                if temp:
+                    list1.append(temp)
+                    mark[i] = 1
+                    mark[j] = 1
+        # делаем метку
+        mark2 = [0]*size
+        size2 = len(list1)
+        for i in range(size2-1):  # TODO тут размер нормальный?
+            for j in range(i+1, size2):
+                if i != j and mark2[i] == 0:  # TODO why i != j
+                    if list1[i] == list1[j]:
+                        mark2[j] = 1
+        # добавляем разные элементы для нового списка
+        for i in range(size2):
+            if mark2[i] == 0:
+                list2.append(list1[i])
 
+        # выбираем не учавствующие элементы
+        for i in range(size):
+            if mark[i] == 0:
+                list3.append(dnf[i])
+                m += 1
 
+        if m == size or size == 1:  # TODO size == 1
+            return list3
+        return list3 + self.getMinDNF(list2)
 
 file_pla = 'exampl.pla'
 f = BoolFunction(file_pla)
@@ -73,3 +109,4 @@ print(A, len(A))
 v1 = '0101-10'
 v2 = '1101-10'
 print(f.glue(v1,v2))
+print(f.getMinDNF(A))
