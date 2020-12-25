@@ -1,6 +1,6 @@
 class BoolFunction:
     def __init__(self, file):
-        with open(file) as fin:
+        with open(file) as fin:  # TODO вынести отсюда открытие файла
             self.i = fin.readline()
             self.o = fin.readline()
             self.ilb = list(fin.readline().split())[1:]
@@ -35,7 +35,7 @@ class BoolFunction:
                 if vector[i] == '1':
                     temp += Names[i]+' '
                 elif vector[i] == '0':
-                    temp += 'n_'+Names[i]+' '
+                    temp += 'not_'+Names[i]+' '
             mDNF.append(temp[:-1])
         return mDNF
 
@@ -91,22 +91,20 @@ class BoolFunction:
             return list3
         return list3 + self.getMinDNF(list2)
 
-file_pla = 'exampl.pla'
+file_pla = '5xp1.pla'
 f = BoolFunction(file_pla)
 
 print(f.ilb)
 print(f.ob)
 print(f.choceFunction(0))
+print(f.vectors)
 
-# for i in f.selectRow(0):
-#     print(i,'->','1')
+
 A = f.selectRow(0)
 print(A, len(A))
-# print(f.minDNF(A))
-# print(f.ilb)
-# print(f.dictVectorIn(f.vectors[0]))
 
-v1 = '0101-10'
-v2 = '1101-10'
-print(f.glue(v1,v2))
+
 print(f.getMinDNF(A))
+B = f.getMinDNF(A)
+C = f.minDNF(B)
+print(' v '.join(C))
