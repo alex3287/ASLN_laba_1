@@ -39,47 +39,37 @@ class BoolFunction:
             mDNF.append(temp[:-1])
         return mDNF
 
-
-    # def addNewRow(self, A):
-    #     '''меняем - на 0 и 1'''
-    #     # B = [] fixme
-    #     # while A:
-    #     #     tempA = []
-    #     #     temp = A.pop(0)
-    #     #     tempA.append(temp)
-    #     #     while '-' in tempA[0]:
-    #     #         n = len(tempA)
-    #     #         while n:
-    #     #             n -= 1
-    #     B = A[:]
-    #     for vector in A:
-    #         if '-' in vector:
-    #             temp1, temp2 = self.modification(vector)
-    #             B.remove(vector)
-    #             B.append(temp1)
-    #             B.append(temp2)
-    #             return self.addNewRow(B)
-    #     return B
-    #
-    # def modification(self, s):
-    #     '''делаем 2 вектора из одного'''
-    #     n = s.index('-')
-    #     s1 = s[:n]+'0'+s[n+1:]
-    #     s2 = s[:n]+'1'+s[n+1:]
-    #     return s1, s2
+    def glue(self, vector1, vector2):
+        newVector = ''
+        countGlue = 0
+        for i, j in zip(vector1, vector2):
+            if i == j:
+                newVector += i
+            else:
+                newVector += '-'
+                countGlue += 1
+        if countGlue-1:
+            return None
+        return newVector
 
 
-file_pla = 'sao2.pla'
+
+
+file_pla = 'exampl.pla'
 f = BoolFunction(file_pla)
 
 print(f.ilb)
 print(f.ob)
-print(f.choceFunction(1))
+print(f.choceFunction(0))
 
 # for i in f.selectRow(0):
 #     print(i,'->','1')
-A = f.selectRow(3)
+A = f.selectRow(0)
 print(A, len(A))
-print(f.minDNF(A))
+# print(f.minDNF(A))
 # print(f.ilb)
 # print(f.dictVectorIn(f.vectors[0]))
+
+v1 = '0101-10'
+v2 = '1101-10'
+print(f.glue(v1,v2))
