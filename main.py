@@ -59,8 +59,8 @@ class BoolFunction:
                     mark[i] = 1
                     mark[j] = 1
         # делаем метку
-        mark2 = [0]*size
         size2 = len(list1)
+        mark2 = [0] * size2
         for i in range(size2-1):  # TODO тут размер нормальный?
             for j in range(i+1, size2):
                 if i != j and mark2[i] == 0:  # TODO why i != j
@@ -81,10 +81,26 @@ class BoolFunction:
             return list3
         return list3 + self.algKwaynMakKlascy(list2)
 
-    def saveResult(self, data):
+    def saveResult(self, data, number):
         '''сохраняет результат в файл pla'''
+        namesFun = self.minDNF(data)
         with open('output.pla','w') as fout:
-            print(data, file=fout)
+        # формат вывода в одну строку
+        #     print(' V '.join(namesFun), file=fout)
+
+        # формат вывода по именам отдельно в каждую строку
+        #     for i in namesFun:
+        #         print(i, file=fout)
+
+        # формат вывода по векторам как файлы pla
+            print('.i', str(self.countInput), file=fout)
+            print('.o', str(1), file=fout)
+            print('.ilb', *self.ilb, file=fout)
+            print('.ob', self.ob[number-1], file=fout)
+            print('.p', len(data), file=fout)
+            for i in data:
+                print(i, 1, file=fout)
+            print('.e', end='', file=fout)
 
 
 def readFilePla(fileName):
@@ -99,15 +115,12 @@ def readFilePla(fileName):
     return countInput, countOutput, ilb, ob, rows, vectors
 
 
-fileName = 'exampl.pla'
-f = BoolFunction(*readFilePla(fileName))
-
-
-print(f.vectors)
-A = f.selectRow(0)
-print(A, len(A))
-print(f.algKwaynMakKlascy(A))
-B = f.algKwaynMakKlascy(A)
-C = f.minDNF(B)
-print(' v '.join(C))
-f.saveResult(' _V_ '.join(C))
+if __name__ == '__main__':
+    fileName = 'squar5.pla'
+    f = BoolFunction(*readFilePla(fileName))
+    print('Доступные функции',f.ob)
+    number = int(input('Введите номер функции (нумерация с 1) -> '))
+    A = f.selectRow(number-1)
+    # print(A, len(A))  # test
+    B = f.algKwaynMakKlascy(A)
+    f.saveResult(B, number)
