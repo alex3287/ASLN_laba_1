@@ -15,6 +15,25 @@ class BoolFunction:
                 A.append(i[0])
         return A
 
+    def addVectors(self, A):
+        '''Заменяет - на 0 и 1 тем самым увеличивает набор данных'''
+        B = []
+        while A:
+            temp = A.pop(0)
+            if '-' in temp:
+                n = temp.find('-')
+                first = temp[:n] + '0' + temp[n + 1:]
+                second = temp[:n] + '1' + temp[n + 1:]
+                if '-' in first:
+                    A.append(first)
+                    A.append(second)
+                else:
+                    B.append(first)
+                    B.append(second)
+            else:
+                B.append(temp)
+        return B
+
     def minDNF(self, A):
         '''формирует данные в читабельный список'''
         Names = self.ilb
@@ -116,11 +135,13 @@ def readFilePla(fileName):
 
 
 if __name__ == '__main__':
-    fileName = 'squar5.pla'
+    fileName = 'exampl.pla'  # тут вручную пишем имя файла
     f = BoolFunction(*readFilePla(fileName))
-    print('Доступные функции',f.ob)
+    print('Доступные функции', f.ob)
     number = int(input('Введите номер функции (нумерация с 1) -> '))
     A = f.selectRow(number-1)
     # print(A, len(A))  # test
-    B = f.algKwaynMakKlascy(A)
-    f.saveResult(B, number)
+    B = f.addVectors(A)
+    # print(B, len(B), sep='\n')  # test
+    C = f.algKwaynMakKlascy(B)
+    f.saveResult(C, number)
