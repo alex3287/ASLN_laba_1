@@ -1,22 +1,11 @@
 class BoolFunction:
-    def __init__(self, file):
-        with open(file) as fin:  # TODO вынести отсюда открытие файла
-            self.i = fin.readline()
-            self.o = fin.readline()
-            self.ilb = list(fin.readline().split())[1:]
-            self.ob = list(fin.readline().split())[1:]
-            self.row = int(fin.readline()[3:])
-            self.vectors = [[j for j in i.rstrip().split()] for i in fin.readlines()[:-1]]
-
-    def dictVectorIn(self, s1):
-        inVar, outVar = s1.split()
-        vectorIn = {i: j for i,j in zip(self.ilb, inVar)}
-        vectorOut = {i: j for i,j in zip(self.ob, outVar)}
-        return vectorIn, vectorOut
-
-    def choceFunction(self, number):
-        '''возвращает имя выходной функции по введенному номеру, нумерация с 1'''
-        return self.ob[number]
+    def __init__(self, countInput, countOutput, ilb, ob, rows, vectors):
+        self.countInput = countInput
+        self.countOutput = countOutput
+        self.ilb = ilb
+        self.ob = ob
+        self.rows = rows
+        self.vectors = vectors
 
     def selectRow(self, function):
         '''собирает нужные строки ТИ из двумерного массива'''
@@ -27,6 +16,7 @@ class BoolFunction:
         return A
 
     def minDNF(self, A):
+        '''формирует данные в читабельный список'''
         Names = self.ilb
         mDNF = []
         for vector in A:
@@ -53,7 +43,7 @@ class BoolFunction:
             return None
         return newVector
 
-    def getMinDNF(self, dnf):
+    def algKwaynMakKlascy(self, dnf):
         size = len(dnf)
         list1 = []
         list2 = []
@@ -89,22 +79,35 @@ class BoolFunction:
 
         if m == size or size == 1:  # TODO size == 1
             return list3
-        return list3 + self.getMinDNF(list2)
+        return list3 + self.algKwaynMakKlascy(list2)
 
-file_pla = '5xp1.pla'
-f = BoolFunction(file_pla)
+    def saveResult(self, data):
+        '''сохраняет результат в файл pla'''
+        with open('output.pla','w') as fout:
+            print(data, file=fout)
 
-print(f.ilb)
-print(f.ob)
-print(f.choceFunction(0))
+
+def readFilePla(fileName):
+    '''функция читает файл pla и забирает данные'''
+    with open(fileName) as fin:
+        countInput = int(fin.readline().split()[1])
+        countOutput = int(fin.readline().split()[1])
+        ilb = [i for i in fin.readline().split()[1:]]
+        ob = [i for i in fin.readline().split()[1:]]
+        rows = int(fin.readline().split()[1])
+        vectors = [[j for j in i.rstrip().split()] for i in fin.readlines()[:-1]]
+    return countInput, countOutput, ilb, ob, rows, vectors
+
+
+fileName = 'exampl.pla'
+f = BoolFunction(*readFilePla(fileName))
+
+
 print(f.vectors)
-
-
 A = f.selectRow(0)
 print(A, len(A))
-
-
-print(f.getMinDNF(A))
-B = f.getMinDNF(A)
+print(f.algKwaynMakKlascy(A))
+B = f.algKwaynMakKlascy(A)
 C = f.minDNF(B)
 print(' v '.join(C))
+f.saveResult(' _V_ '.join(C))
