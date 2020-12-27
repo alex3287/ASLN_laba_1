@@ -70,7 +70,7 @@ class BoolFunction:
         mark = [0]*size
         m = 0
         # выполнения склеивания векторов
-        for i in range(size-1):  # TODO тут перепроверить нужно
+        for i in range(size-1):
             for j in range(i+1, size):
                 temp = self.glue(dnf[i], dnf[j])
                 if temp:
@@ -80,9 +80,9 @@ class BoolFunction:
         # делаем метку
         size2 = len(list1)
         mark2 = [0] * size2
-        for i in range(size2-1):  # TODO тут размер нормальный?
+        for i in range(size2-1):
             for j in range(i+1, size2):
-                if i != j and mark2[i] == 0:  # TODO why i != j
+                if i != j and mark2[i] == 0:
                     if list1[i] == list1[j]:
                         mark2[j] = 1
         # добавляем разные элементы для нового списка
@@ -96,7 +96,7 @@ class BoolFunction:
                 list3.append(dnf[i])
                 m += 1
 
-        if m == size or size == 1:  # TODO size == 1
+        if m == size or size == 1:
             return list3
         return list3 + self.algKwaynMakKlascy(list2)
 
@@ -135,12 +135,12 @@ def readFilePla(fileName):
 
 
 if __name__ == '__main__':
-    fileName = 'exampl.pla'  # тут вручную пишем имя файла
+    fileName = 'squar5.pla'  # тут вручную пишем имя файла
     f = BoolFunction(*readFilePla(fileName))
     print('Доступные функции', f.ob)
     number = int(input('Введите номер функции (нумерация с 1) -> '))
     A = f.selectRow(number-1)
-    # print(A, len(A))  # test
+    print(A, len(A))  # test
     B = f.addVectors(A)
     # print(B, len(B), sep='\n')  # test
     C = f.algKwaynMakKlascy(B)
